@@ -201,7 +201,7 @@ it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
 
   })
 
-  it.only('Desafio (encontre o gato)', () => {
+  it('Desafio (encontre o gato)', () => {
     cy.get('#cat')
       .should('not.be.visible')
       .invoke('show')
