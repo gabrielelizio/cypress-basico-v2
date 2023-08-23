@@ -11,6 +11,9 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
      it('preenche os campos obrigatórios e envia o formulário', function() {
         const longText= 'Teste,  Teste,  Teste,  Teste,  Teste,  Teste,  Teste, Teste,  Teste,  Teste,  Teste,  Teste,  Teste,  Teste,  Teste,'
+       
+        cy.clock()
+       
         cy.get('#firstName').type('Gabriel')
         cy.get('#lastName').type('Elizo')
         cy.get('#email').type('gabrielelizio@hotmail.com')
@@ -18,6 +21,9 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.contains('.button','Enviar').click()
         cy.get('.success').should('be.visible')
         
+        cy.tick(3000)
+        cy.get('.success').should('not.be.visible')
+
 
      })
 
@@ -155,4 +161,53 @@ it('acessa a página da política de privacidade removendo o target e então cli
 
 
 })
+
+it('exibe e esconde as mensagens de sucesso e erro usando o .invoke', () => {
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible')
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible')
+  })
+
+
+  it('preenche a area de texto usando o comando invoke',function(){
+    const longText = Cypress._.repeat('Gabriel Ama Anna', 20)
+    cy.get('#open-text-area')
+    .invoke('val', longText)
+    .should('have.value', longText)
+
+  })
+
+  it('faz uma requisição HTTP',function(){
+    cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html').then((response)=>{
+        expect(response.status).to.equal(200)
+        expect(response.statusText).to.equal('OK')
+        expect(response.body).to.include('CAC TAT')
+
+    })
+    
+  
+    
+
+  })
+
+  it.only('Desafio (encontre o gato)', () => {
+    cy.get('#cat')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .invoke('hide')
+      .should('not.be.visible')
+     })
+
 })
